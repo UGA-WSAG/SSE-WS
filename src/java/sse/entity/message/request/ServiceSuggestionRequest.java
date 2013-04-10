@@ -15,6 +15,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.codehaus.jackson.map.ObjectMapper;
 import sse.entity.Operation;
 import sse.entity.Service;
 
@@ -25,18 +26,31 @@ import sse.entity.Service;
 @XmlRootElement(name = "serviceSuggestionRequest")
 public class ServiceSuggestionRequest {
     
+    @XmlElement(name = "direction", nillable = false)
+    public String direction;
     
     @XmlElement(name = "desiredFunctionality", nillable = true)
     public String desiredFunctionality;
     
     @XmlElementWrapper(name="candidates")
     @XmlElement(name = "operation", nillable = false)
-    public List<Operation> candiates;
+    public List<Operation> candidates;
     
     @XmlElementWrapper(name="workflow")
     @XmlElement(name = "operation", nillable = false)
     public List<Operation> workflow;
+    
+    @XmlElementWrapper(name="workflow2")
+    @XmlElement(name = "operation", nillable = false)
+    public List<Operation> workflow2;
 
+    /**
+     * @param direction the direction to set
+     */
+    public void setDirection(String direction) {
+        this.direction = direction;
+    }
+    
     /**
      * @param desiredFunctionality the desiredFunctionality to set
      */
@@ -47,8 +61,8 @@ public class ServiceSuggestionRequest {
     /**
      * @param candiates the candiates to set
      */
-    public void setCandiates(List<Operation> candiates) {
-        this.candiates = candiates;
+    public void setCandidates(List<Operation> candiates) {
+        this.candidates = candiates;
     }
 
     /**
@@ -56,6 +70,13 @@ public class ServiceSuggestionRequest {
      */
     public void setWorkflow(List<Operation> workflow) {
         this.workflow = workflow;
+    }
+    
+    /**
+     * @param workflow the second workflow to set
+     */
+    public void setWorkflow2(List<Operation> workflow2) {
+        this.workflow2 = workflow2;
     }
     
     public static void main(String[] args) {
@@ -74,7 +95,7 @@ public class ServiceSuggestionRequest {
         workflow.add(op1);
         
         ServiceSuggestionRequest request = new ServiceSuggestionRequest();
-        request.setCandiates(candidates);
+        request.setCandidates(candidates);
         request.setWorkflow(workflow);
         
         try {
@@ -89,7 +110,23 @@ public class ServiceSuggestionRequest {
             Logger.getLogger(ServiceSuggestionRequest.class.getName()).log(Level.SEVERE, null, ex);
         }
         
+        System.out.println(request);
+        
     } // main
    
+    @Override
+    public String toString() {
+        
+        String out = "request.toString -> ";
+        ObjectMapper mapper = new ObjectMapper();
+        
+        try {
+            out += mapper.writeValueAsString(this);
+        } catch (Exception ex) {
+            
+        }
+        
+        return out;
+    } // toString
     
 }

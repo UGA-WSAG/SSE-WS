@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 import javax.servlet.ServletContext;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONArray;
 import sse.entity.Operation;
 import sse.entity.Service;
@@ -22,6 +23,8 @@ import sse.entity.SuggestedOperation;
 import sse.entity.message.request.ServiceSuggestionRequest;
 import sse.entity.message.response.ServiceSuggestionResponse;
 import suggest.ForwardSuggest;
+import suggest.BackwardSuggest;
+import suggest.BidirectionSuggest;
 import util.WebServiceOpr;
 import util.WebServiceOprScore;
 
@@ -34,6 +37,7 @@ import util.WebServiceOprScore;
 @Singleton
 public class ServiceSuggestion {
 
+    private static final String WEB_SERVICE_OWL = "http://obi-webservice.googlecode.com/svn/trunk/ontology/webService.owl";
     private static final Logger logger = Logger.getLogger(ServiceSuggestion.class.getName());
     
     @Context
@@ -45,7 +49,6 @@ public class ServiceSuggestion {
      * @return 
      */
     private String wsExtensionsErrorJson (String error) {
-        logger.log(Level.WARNING, error);
         return String.format("$.wsextensions_error(\"The Service Suggestion Engine Web Service encountered an error on the server side. <pre>%s</pre>\");", error);
     } // wsExtensionsError
  
@@ -67,6 +70,151 @@ public class ServiceSuggestion {
         return null;
         
     } // opFromEncodedString
+    
+    
+    @GET
+    @Path("get/json/schema/request")
+    @Produces("application/json")
+    public String getSchemaRequestJSON () {
+        String out = "";
+        ObjectMapper mapper = new ObjectMapper();
+        try { out += mapper.generateJsonSchema(ServiceSuggestionRequest.class); } catch (Exception ex) { }
+        return out;
+    }
+    
+    @GET
+    @Path("get/json/schema/response")
+    @Produces("application/json")
+    public String getSchemaResponseJSON () {
+        String out = "";
+        ObjectMapper mapper = new ObjectMapper();
+        try { out += mapper.generateJsonSchema(ServiceSuggestionResponse.class); } catch (Exception ex) { }
+        return out;
+    }
+    
+    @GET
+    @Path("get/jsonp")
+    @Produces("application/json")
+    public String getJSONP (
+        @QueryParam("payload")  String payload,
+        @QueryParam("callback") String callback
+    ) {
+        
+        logger.log(Level.INFO, "getJSONP operation invoked");
+        
+        // check the parameters
+        if (payload == null) {
+            logger.log(Level.WARNING, "getJSONP payload not included");
+            return wsExtensionsErrorJson("no payload was included");
+        } else if (callback == null) {
+            logger.log(Level.WARNING, "getJSONP callback not specified");
+            return wsExtensionsErrorJson("no callback function name was provided");
+        } // if
+        
+        logger.log(Level.INFO, String.format("getJSONP received payload --> %s", payload));
+        
+        // attempt to unmarchal the payload
+        ObjectMapper mapper = new ObjectMapper();
+        ServiceSuggestionRequest request = null;
+        
+        try {
+            request = mapper.readValue(payload, ServiceSuggestionRequest.class);
+            logger.log(Level.INFO, "getJSONP successfully unmarchalled payload");
+        } catch (Exception ex) {
+            logger.log(Level.WARNING, String.format("getJSONP payload was malformed --> %s", payload));
+            return wsExtensionsErrorJson("Bad request message format.");
+        } // try
+        
+        // get the candidate ops
+        List<WebServiceOpr> candidateOps = new ArrayList<WebServiceOpr>();
+        for (Operation o : request.candidates) {
+            candidateOps.add(new WebServiceOpr(o.operationName, o.service.descriptionDocument));
+        }
+        
+        // get the workflow ops
+        List<WebServiceOpr> workflowOps  = new ArrayList<WebServiceOpr>();
+        for (Operation o : request.workflow) {
+            workflowOps.add(new WebServiceOpr(o.operationName, o.service.descriptionDocument));
+        }
+        
+        // get the workflow ops
+        List<WebServiceOpr> workflowOps2  = new ArrayList<WebServiceOpr>();
+        for (Operation o : request.workflow2) {
+            workflowOps2.add(new WebServiceOpr(o.operationName, o.service.descriptionDocument));
+        }
+        
+        // perform forward suggestion
+        
+        List<WebServiceOprScore> suggestOpList = null;
+        
+        try {
+            if (request.direction.trim().equalsIgnoreCase("forward")) {
+                ForwardSuggest sugg = new ForwardSuggest();
+                suggestOpList = sugg.suggestNextService(workflowOps, candidateOps, request.desiredFunctionality, WEB_SERVICE_OWL, null);
+            } else if (request.direction.trim().equalsIgnoreCase("backward")) {
+                BackwardSuggest sugg = new BackwardSuggest();
+                suggestOpList = sugg.suggestPrevServices(workflowOps2, candidateOps, request.desiredFunctionality, "", WEB_SERVICE_OWL, null);
+            } else {
+                BidirectionSuggest sugg = new BidirectionSuggest();
+                suggestOpList = sugg.suggestServices(workflowOps, workflowOps2, candidateOps, request.desiredFunctionality, WEB_SERVICE_OWL, null);
+            } // if
+        } catch (Exception e) {
+            logger.log(Level.WARNING, "getJSONP problem querying suggestion engine");
+            return wsExtensionsErrorJson("problem querying suggestion engine");
+        } // try
+        
+        logger.log(Level.INFO, "got suggested operations");
+        
+        List<SuggestedOperation> operations = new ArrayList<SuggestedOperation>();
+        for (WebServiceOprScore o : suggestOpList) {
+            
+            Service s = new Service();
+            s.setDescriptionDocument(o.getWsDescriptionDoc());
+            
+            SuggestedOperation so = new SuggestedOperation();
+            so.setService(s);
+            so.setOperationName(o.getOperationName());
+            so.setScore(o.getScore());
+            so.setDataMediationScore(o.getDmScore());
+            so.setFunctionalityScore(o.getFnScore());
+            so.setPreconditionEffectScore(o.getPeScore());
+            
+            // not the best way to do this...
+            for (Operation op : request.candidates) {
+                if ((op.service.descriptionDocument.compareTo(so.service.descriptionDocument) == 0) && (op.operationName.compareTo(so.operationName)) == 0) {
+                    so.setNote(op.note);
+                } // if
+            } // for
+            
+            operations.add(so);
+        } // for
+        
+        Collections.sort(operations);
+        
+        ServiceSuggestionResponse response = new ServiceSuggestionResponse();
+        response.setOperations(operations);
+        
+        if (response.operations.isEmpty()) {
+            response.error = true;
+            response.note = "SSE crashed for some unknown reason";
+        } // if
+        
+        // attemp to marchal the response
+        String out = "";
+        
+        logger.log(Level.INFO, "sending response");
+        
+        try {
+            out = String.format("%s(%s);", callback, mapper.writeValueAsString(response));
+        } catch (Exception ex) {
+            logger.log(Level.WARNING, "getJSONP problem marchalling response");
+            return wsExtensionsErrorJson("problem marshalling response message"); 
+        } // try
+        
+        // return the repsonse to the client
+        return out;
+        
+    } // getJSONP
     
     @GET 
     @Path("get/json/{direction}")
@@ -185,7 +333,7 @@ public class ServiceSuggestion {
     ) {
         
         List<WebServiceOpr> candidateOps = new ArrayList<WebServiceOpr>();
-        for (Operation o : request.candiates) {
+        for (Operation o : request.candidates) {
             candidateOps.add(new WebServiceOpr(o.operationName, o.service.descriptionDocument));
         }
         

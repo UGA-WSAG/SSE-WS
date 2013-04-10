@@ -30,6 +30,14 @@ public class ServiceSuggestionResponse {
     @XmlElement(name = "operation", nillable = false)
     public List<SuggestedOperation> operations;
 
+    @XmlElementWrapper(name="error")
+    @XmlElement(name = "error", nillable = false)
+    public boolean error = false;
+    
+    @XmlElementWrapper(name="note")
+    @XmlElement(name = "note", nillable = false)
+    public String note = "";
+    
     /**
      * @param operations the operations to set
      */

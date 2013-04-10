@@ -19,6 +19,9 @@ public class Operation {
     
     @XmlElement(name = "service", nillable = false)
     public Service service;
+    
+    @XmlElement(name = "note", nillable = false)
+    public String note;
 
     /**
      * @param operationName the operationName to set
@@ -32,6 +35,13 @@ public class Operation {
      */
     public void setService(Service service) {
         this.service = service;
+    }
+    
+    /**
+     * @param service the note to set
+     */
+    public void setNote(String note) {
+        this.note = note;
     }
     
 }
