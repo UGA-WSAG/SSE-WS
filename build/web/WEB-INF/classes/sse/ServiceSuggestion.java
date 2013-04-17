@@ -22,9 +22,9 @@ import sse.entity.Service;
 import sse.entity.SuggestedOperation;
 import sse.entity.message.request.ServiceSuggestionRequest;
 import sse.entity.message.response.ServiceSuggestionResponse;
-import suggest.ForwardSuggest;
 import suggest.BackwardSuggest;
 import suggest.BidirectionSuggest;
+import suggest.ForwardSuggest;
 import util.WebServiceOpr;
 import util.WebServiceOprScore;
 
@@ -37,7 +37,8 @@ import util.WebServiceOprScore;
 @Singleton
 public class ServiceSuggestion {
 
-    private static final String WEB_SERVICE_OWL = "http://obi-webservice.googlecode.com/svn/trunk/ontology/webService.owl";
+    protected static final String OBI_OWL = "http://purl.obolibrary.org/obo/obi.owl";
+    protected static final String WEB_SERVICE_OWL = "http://obi-webservice.googlecode.com/svn/trunk/ontology/webService.owl";
     private static final Logger logger = Logger.getLogger(ServiceSuggestion.class.getName());
     
     @Context

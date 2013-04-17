@@ -36,47 +36,31 @@ public class SuggestInputValues
     public static List<String> SuggestParamValues(String WSDLURL, String paramName, String owlURI)
     {
         List<String> values = new ArrayList<String>();  
-        values.add("<b>Possible Input Values:</b>");
         String paramIRI;
         
         Element paramElement= null;
         Namespace sawsdlNS = Namespace.getNamespace("sawsdl", "http://www.w3.org/ns/sawsdl");
         SchemaParser schemaParser = new SchemaParser();
         
-        try{
-            List<Element> schemaList = schemaParser.getSchemaElemList(WSDLURL);
-            for(Element e : schemaList)
-                paramElement = schemaParser.getElementFromSchema(paramName, e);
-            org.jdom.Attribute attribute = paramElement.getAttribute("modelReference",sawsdlNS);
+        List<Element> schemaList = schemaParser.getSchemaElemList(WSDLURL);
 
-            if(attribute!=null)
-                if (!attribute.getValue().equals(""))
-                {
-                    try{
-                        paramIRI = attribute.getValue();
-                        OntologyManager parser = OntologyManager.getInstance(owlURI);
-                        OWLClass conceptClass = parser.getConceptClass(paramIRI);
+        for(Element e : schemaList) {
+            paramElement = schemaParser.getElementFromSchema(paramName, e);
+        } // for
+            
+        org.jdom.Attribute attribute = paramElement.getAttribute("modelReference", sawsdlNS);
+
+        if(attribute != null && !attribute.getValue().isEmpty()) {
+              
+                paramIRI = attribute.getValue();
+                OntologyManager parser = OntologyManager.getInstance(owlURI);
+                OWLClass conceptClass = parser.getConceptClass(paramIRI);
                         
-                        values = getIndividuals(conceptClass, parser);
-                        values.addAll(getDirectSubClasses(conceptClass, parser));
-                    }
-                    catch(Exception e)
-                    {
-                        System.out.println("Exception Occurred when getting the class in the Ontology "
-                                + "for the requested param :" + e);
-                    }
-                }//if ends
-            }//Outer try ends
-            catch(java.lang.NullPointerException e)
-            {
-                System.out.println("The Web service document could not be found at the given address\n" + e);
-                values.add("Unexpected Error Occurred check server log for Details !");
-            }
-            catch(Exception e)
-            {
-                System.out.println("Following Exception Occurred: " + e);
-                values.add("Unexpected Error Occurred check server log for Details !");
-            }
+                values = getIndividuals(conceptClass, parser);
+                values.addAll(getDirectSubClasses(conceptClass, parser));
+
+        } // if
+        
         return values;
         
     }//Method ends
@@ -94,16 +78,20 @@ public class SuggestInputValues
         String label = "";
         String className = "";
         
-        for (OWLClass c : subclasses)
-        {
+        for (OWLClass c : subclasses) {
             label = parser.getClassLabel(c);
             className = parser.getConceptName(c.getIRI().toString());
-            if (!label.equals(""))
+            
+            if (!label.isEmpty()) {
                 values.add(label);
-            else if(!className.equals(""))
+            } else if(!className.isEmpty()) {
                 values.add(className);
-        }//for ends
+            } // if
+            
+        } // for 
+        
         return values;
+    
     }//method ends
 
     /**

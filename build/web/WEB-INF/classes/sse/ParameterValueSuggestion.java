@@ -13,10 +13,8 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import org.json.JSONArray;
-import sse.entity.Documentation;
 import sse.entity.message.request.ParameterValueSuggestionRequest;
 import sse.entity.message.response.ParameterValueSuggestionResponse;
-import workflowHelp.GetDocumentation;
 import workflowHelp.SuggestInputValues;
 
 /**
@@ -53,7 +51,7 @@ public class ParameterValueSuggestion {
         logger.log(Level.INFO, "ParameterValueSuggestion.getJSONP operation invoked.");
         logger.log(Level.INFO, "wsdl = {0}, param = {1}, callback = {2}", new String[] {wsdl, param, callback});
         
-        List<String> inputs      = SuggestInputValues.SuggestParamValues(wsdl, param, sContext.getRealPath("WEB-INF/owl/webService.owl"));
+        List<String> inputs      = SuggestInputValues.SuggestParamValues(wsdl, param, ServiceSuggestion.OBI_OWL);
         JSONArray    suggestions = new JSONArray();
         
         for (String input : inputs) {
@@ -82,7 +80,7 @@ public class ParameterValueSuggestion {
         String ontologyPath = inputMessage.service.ontologyURI;
        
         if (ontologyPath == null) {
-            ontologyPath = sContext.getRealPath("WEB-INF/owl/webService.owl");
+            ontologyPath = ServiceSuggestion.OBI_OWL;
         }
         
         List<String> values = SuggestInputValues.SuggestParamValues(inputMessage.service.descriptionDocument, inputMessage.parameter, ontologyPath);

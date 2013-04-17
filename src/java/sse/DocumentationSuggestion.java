@@ -5,7 +5,6 @@
 package sse;
 
 import com.sun.jersey.spi.resource.Singleton;
-import java.io.InputStream;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -56,7 +55,7 @@ public class DocumentationSuggestion {
         logger.log(Level.INFO, "Documentation.getJSONP operation invoked.");
         logger.log(Level.INFO, "wsdl = {0}, param = {1}, callback = {2}", new String[] {descriptionDocument, parameter, callback});
         
-        List<String> docs        = GetDocumentation.getParamInfo(descriptionDocument, parameter, sContext.getRealPath("WEB-INF/owl/webService.owl"));
+        List<String> docs        = GetDocumentation.getParamInfo(descriptionDocument, parameter, ServiceSuggestion.WEB_SERVICE_OWL);
         JSONArray    suggestions = new JSONArray();
         
         for (String doc : docs) {
@@ -90,7 +89,7 @@ public class DocumentationSuggestion {
         String ontologyPath = inputMessage.service.ontologyURI;
        
         if (ontologyPath == null) {
-            ontologyPath = sContext.getRealPath("WEB-INF/owl/webService.owl");
+            ontologyPath = ServiceSuggestion.WEB_SERVICE_OWL;
         }
         
         List<String> docs        = GetDocumentation.getParamInfo(inputMessage.service.descriptionDocument, inputMessage.parameter, ontologyPath);

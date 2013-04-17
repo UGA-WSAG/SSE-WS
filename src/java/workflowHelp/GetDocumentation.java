@@ -55,7 +55,7 @@ public class GetDocumentation
                 if (paramElement.getChild("annotation", nameSpace)!=null)
                     if (paramElement.getChild("annotation",nameSpace).getChild("documentation",nameSpace) !=null)
                         if(!paramElement.getChild("annotation",nameSpace).getChild("documentation",nameSpace).getText().equals(""))
-                                wsdlDoc = "Documentation : " + paramElement.getChild("annotation",nameSpace).getChild("documentation",nameSpace).getText();
+                                wsdlDoc = "<b>Documentation</b>: " + paramElement.getChild("annotation",nameSpace).getChild("documentation",nameSpace).getText();
                 
                 // Retriving the Cardinality from WSDL if Available
                 org.jdom.Attribute cardAttrMIN = paramElement.getAttribute("minOccurs");
