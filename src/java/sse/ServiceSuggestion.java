@@ -50,7 +50,7 @@ public class ServiceSuggestion {
      * @return 
      */
     private String wsExtensionsErrorJson (String error) {
-        return String.format("$.wsextensions_error(\"The Service Suggestion Engine Web Service encountered an error on the server side. <pre>%s</pre>\");", error);
+        return String.format("$.wsextensions.error(\"The Service Suggestion Engine Web Service encountered an error on the server side. <pre>%s</pre>\");", error);
     } // wsExtensionsError
  
     private WebServiceOpr opFromEncodedString (String str) {
@@ -154,7 +154,7 @@ public class ServiceSuggestion {
                 suggestOpList = sugg.suggestNextService(workflowOps, candidateOps, request.desiredFunctionality, WEB_SERVICE_OWL, null);
             } else if (request.direction.trim().equalsIgnoreCase("backward")) {
                 BackwardSuggest sugg = new BackwardSuggest();
-                suggestOpList = sugg.suggestPrevServices(workflowOps2, candidateOps, request.desiredFunctionality, "", WEB_SERVICE_OWL, null);
+                suggestOpList = sugg.suggestPrevServices(workflowOps2, candidateOps, request.desiredFunctionality, WEB_SERVICE_OWL, null);
             } else {
                 BidirectionSuggest sugg = new BidirectionSuggest();
                 suggestOpList = sugg.suggestServices(workflowOps, workflowOps2, candidateOps, request.desiredFunctionality, WEB_SERVICE_OWL, null);

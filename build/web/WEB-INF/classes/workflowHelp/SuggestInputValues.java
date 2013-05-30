@@ -36,7 +36,6 @@ public class SuggestInputValues
     public static List<String> SuggestParamValues(String WSDLURL, String paramName, String owlURI)
     {
         List<String> values = new ArrayList<String>();  
-        values.add("<b>Possible Input Values:</b>");
         String paramIRI;
         
         Element paramElement= null;
@@ -62,16 +61,6 @@ public class SuggestInputValues
 
         } // if
         
-//        catch(java.lang.NullPointerException e)
-//        {
-//            System.out.println("The Web service document could not be found at the given address\n" + e);
-//            values.add("Unexpected Error Occurred check server log for Details !");
-//        }
-//        catch(Exception e)
-//        {
-//            System.out.println("Following Exception Occurred: " + e);
-//            values.add("Unexpected Error Occurred check server log for Details !");
-//        }
         return values;
         
     }//Method ends
@@ -89,16 +78,20 @@ public class SuggestInputValues
         String label = "";
         String className = "";
         
-        for (OWLClass c : subclasses)
-        {
+        for (OWLClass c : subclasses) {
             label = parser.getClassLabel(c);
             className = parser.getConceptName(c.getIRI().toString());
-            if (!label.equals(""))
+            
+            if (!label.isEmpty()) {
                 values.add(label);
-            else if(!className.equals(""))
+            } else if(!className.isEmpty()) {
                 values.add(className);
-        }//for ends
+            } // if
+            
+        } // for 
+        
         return values;
+    
     }//method ends
 
     /**

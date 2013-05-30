@@ -50,7 +50,7 @@ public class ServiceSuggestion {
      * @return 
      */
     private String wsExtensionsErrorJson (String error) {
-        return String.format("$.wsextensions_error(\"The Service Suggestion Engine Web Service encountered an error on the server side. <pre>%s</pre>\");", error);
+        return String.format("$.wsextensions.error(\"The Service Suggestion Engine Web Service encountered an error on the server side. <pre>%s</pre>\");", error);
     } // wsExtensionsError
  
     private WebServiceOpr opFromEncodedString (String str) {

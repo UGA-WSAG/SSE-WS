@@ -55,7 +55,7 @@ public class DocumentationSuggestion {
         logger.log(Level.INFO, "Documentation.getJSONP operation invoked.");
         logger.log(Level.INFO, "wsdl = {0}, param = {1}, callback = {2}", new String[] {descriptionDocument, parameter, callback});
         
-        List<String> docs        = GetDocumentation.getParamInfo(descriptionDocument, parameter, ServiceSuggestion.OBI_OWL);
+        List<String> docs        = GetDocumentation.getParamInfo(descriptionDocument, parameter, ServiceSuggestion.WEB_SERVICE_OWL);
         JSONArray    suggestions = new JSONArray();
         
         for (String doc : docs) {
@@ -89,7 +89,7 @@ public class DocumentationSuggestion {
         String ontologyPath = inputMessage.service.ontologyURI;
        
         if (ontologyPath == null) {
-            ontologyPath = ServiceSuggestion.OBI_OWL;
+            ontologyPath = ServiceSuggestion.WEB_SERVICE_OWL;
         }
         
         List<String> docs        = GetDocumentation.getParamInfo(inputMessage.service.descriptionDocument, inputMessage.parameter, ontologyPath);

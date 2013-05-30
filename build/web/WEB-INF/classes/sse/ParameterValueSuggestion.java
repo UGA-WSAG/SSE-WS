@@ -51,7 +51,7 @@ public class ParameterValueSuggestion {
         logger.log(Level.INFO, "ParameterValueSuggestion.getJSONP operation invoked.");
         logger.log(Level.INFO, "wsdl = {0}, param = {1}, callback = {2}", new String[] {wsdl, param, callback});
         
-        List<String> inputs      = SuggestInputValues.SuggestParamValues(wsdl, param, ServiceSuggestion.OBI_OWL);
+        List<String> inputs      = SuggestInputValues.SuggestParamValues(wsdl, param, ServiceSuggestion.WEB_SERVICE_OWL);
         JSONArray    suggestions = new JSONArray();
         
         for (String input : inputs) {
@@ -80,7 +80,7 @@ public class ParameterValueSuggestion {
         String ontologyPath = inputMessage.service.ontologyURI;
        
         if (ontologyPath == null) {
-            ontologyPath = ServiceSuggestion.OBI_OWL;
+            ontologyPath = ServiceSuggestion.WEB_SERVICE_OWL;
         }
         
         List<String> values = SuggestInputValues.SuggestParamValues(inputMessage.service.descriptionDocument, inputMessage.parameter, ontologyPath);
