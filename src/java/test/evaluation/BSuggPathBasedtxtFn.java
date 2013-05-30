@@ -191,7 +191,7 @@ public class BSuggPathBasedtxtFn {
         workflowOpsOBI.add(new WebServiceOpr("retrieveNeighborResult", wsNeighbor));
         BackwardSuggest sugg2 = new BackwardSuggest();
         desiredOps = "";
-        List<WebServiceOprScore> suggestOpList2 = sugg2.suggestPrevServices(workflowOpsOBI, candidateOpsOBI, desiredOps, ontology, null, globalInputs);
+        List<WebServiceOprScore> suggestOpList2 = sugg2.suggestPrevServices(workflowOpsOBI, candidateOpsOBI, desiredOps, ontology,globalInputs);
         System.out.println("\n");
         System.out.println("--------------------------------------------------");
         System.out.println("Suggestion for Step 8: ?? -> retrieveNeighborResult");
@@ -200,7 +200,7 @@ public class BSuggPathBasedtxtFn {
         
                 
         workflowOpsOBI.add(new WebServiceOpr("runNeighborDefaultParam", wsNeighbor));
-        suggestOpList2 = sugg2.suggestPrevServices(workflowOpsOBI, candidateOpsOBI, desiredOps, ontology, null, globalInputs);
+        suggestOpList2 = sugg2.suggestPrevServices(workflowOpsOBI, candidateOpsOBI, desiredOps, ontology,globalInputs);
         System.out.println("\n");
         System.out.println("--------------------------------------------------");
         System.out.println("Suggestion for Step 7: ?? -> runNeighborDefaultParam -> retrieveNeighborResult");
@@ -209,7 +209,7 @@ public class BSuggPathBasedtxtFn {
         
                 
         workflowOpsOBI.add(new WebServiceOpr("retrieveProtDistResult", wsProtDist));
-        suggestOpList2 = sugg2.suggestPrevServices(workflowOpsOBI, candidateOpsOBI, desiredOps, ontology, null, globalInputs);
+        suggestOpList2 = sugg2.suggestPrevServices(workflowOpsOBI, candidateOpsOBI, desiredOps, ontology,globalInputs);
         System.out.println("\n");
         System.out.println("--------------------------------------------------");
         System.out.println("Suggestion for Step 6: ?? -> retrieveProtDistResult -> runNeighborDefaultParam -> retrieveNeighborResult");
@@ -218,7 +218,7 @@ public class BSuggPathBasedtxtFn {
         
         
         workflowOpsOBI.add(new WebServiceOpr("protdistDefaultParameters", wsProtDist));
-        suggestOpList2 = sugg2.suggestPrevServices(workflowOpsOBI, candidateOpsOBI, desiredOps, ontology, null, globalInputs);
+        suggestOpList2 = sugg2.suggestPrevServices(workflowOpsOBI, candidateOpsOBI, desiredOps, ontology,globalInputs);
         System.out.println("\n");
         System.out.println("--------------------------------------------------");
         System.out.println("Suggestion for Step 5: ?? -> protdistDefaultParameters -> retrieveProtDistResult -> runNeighborDefaultParam -> retrieveNeighborResult");
@@ -227,7 +227,7 @@ public class BSuggPathBasedtxtFn {
         
                 
         workflowOpsOBI.add(new WebServiceOpr("getResult", clustalW));
-        suggestOpList2 = sugg2.suggestPrevServices(workflowOpsOBI, candidateOpsOBI, desiredOps, ontology, null, globalInputs);
+        suggestOpList2 = sugg2.suggestPrevServices(workflowOpsOBI, candidateOpsOBI, desiredOps, ontology,globalInputs);
         System.out.println("\n");
         System.out.println("--------------------------------------------------");
         System.out.println("Suggestion for Step 4: ?? -> clustalW.getResult -> protdistDefaultParameters -> retrieveProtDistResult -> runNeighborDefaultParam -> retrieveNeighborResult");
@@ -236,7 +236,7 @@ public class BSuggPathBasedtxtFn {
         
                         
         workflowOpsOBI.add(new WebServiceOpr("run", clustalW));
-        suggestOpList2 = sugg2.suggestPrevServices(workflowOpsOBI, candidateOpsOBI, desiredOps, ontology, null, globalInputs);
+        suggestOpList2 = sugg2.suggestPrevServices(workflowOpsOBI, candidateOpsOBI, desiredOps, ontology,globalInputs);
         System.out.println("\n");
         System.out.println("--------------------------------------------------");
         System.out.println("Suggestion for Step 3: ?? -> clustalW.run -> clustalW.getResult -> protdistDefaultParameters -> retrieveProtDistResult -> runNeighborDefaultParam -> retrieveNeighborResult");
@@ -245,7 +245,7 @@ public class BSuggPathBasedtxtFn {
         
 
         workflowOpsOBI.add(new WebServiceOpr("filterByEvalScoreCSV", filerSeq));
-        suggestOpList2 = sugg2.suggestPrevServices(workflowOpsOBI, candidateOpsOBI, desiredOps, ontology, null, globalInputs);
+        suggestOpList2 = sugg2.suggestPrevServices(workflowOpsOBI, candidateOpsOBI, desiredOps, ontology,globalInputs);
         System.out.println("\n");
         System.out.println("--------------------------------------------------");
         System.out.println("Suggestion for Step 2: ?? -> filterByEvalScoreCSV -> clustalW.run -> clustalW.getResult -> protdistDefaultParameters -> retrieveProtDistResult -> runNeighborDefaultParam -> retrieveNeighborResult");
@@ -254,7 +254,7 @@ public class BSuggPathBasedtxtFn {
         
                
         workflowOpsOBI.add(new WebServiceOpr("getResult", wublast));
-        suggestOpList2 = sugg2.suggestPrevServices(workflowOpsOBI, candidateOpsOBI, desiredOps, ontology, null, globalInputs);
+        suggestOpList2 = sugg2.suggestPrevServices(workflowOpsOBI, candidateOpsOBI, desiredOps, ontology,globalInputs);
         System.out.println("\n");
         System.out.println("--------------------------------------------------");
         System.out.println("Suggestion for Step 1: ?? -> wublast.getResult -> clustalW.run -> clustalW.getResult -> protdistDefaultParameters -> retrieveProtDistResult -> runNeighborDefaultParam -> retrieveNeighborResult");
