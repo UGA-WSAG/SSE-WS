@@ -56,7 +56,7 @@ public class BackwardSuggest {
      * @return Returns list of OpWSDLScore that basically stores all the Subscores, for details see <code>util.WebServiceOprScore</code>
      */
     public List<WebServiceOprScore> suggestPrevServices(List<WebServiceOpr> workflowOPs,
-            List<WebServiceOpr> candidateOPs, String preferOp, String owlURI, String initState,  List<String> globalInputs ) {
+            List<WebServiceOpr> candidateOPs, String preferOp, String owlURI,  List<String> globalInputs ) {
 
         if (preferOp != null) {
             if (preferOp.length() == 0) {

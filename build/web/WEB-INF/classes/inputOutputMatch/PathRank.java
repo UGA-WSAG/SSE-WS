@@ -100,7 +100,11 @@ public class PathRank {
             double scoreWop = matchedPath.getScore();
             double scoreGlobal = 0.0;
             
-            if (scoreWop < 0.5 && (globalIps != null || !globalIps.isEmpty()))
+            if (globalIps != null && globalIps.isEmpty()) {
+                globalIps = null;
+            } // if
+            
+            if (scoreWop < 0.5 && globalIps != null)
             {
                 if(!inPathScore.getPath().isEmpty())
                 {

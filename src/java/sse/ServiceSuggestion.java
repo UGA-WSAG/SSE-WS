@@ -5,6 +5,8 @@
 package sse;
 
 import com.sun.jersey.spi.resource.Singleton;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -160,8 +162,11 @@ public class ServiceSuggestion {
                 suggestOpList = sugg.suggestServices(workflowOps, workflowOps2, candidateOps, request.desiredFunctionality, WEB_SERVICE_OWL, null);
             } // if
         } catch (Exception e) {
-            logger.log(Level.WARNING, "getJSONP problem querying suggestion engine");
-            return wsExtensionsErrorJson("problem querying suggestion engine");
+            logger.log(Level.WARNING, "getJSONP problem querying suggestion engine: " + e);
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            e.printStackTrace(pw);
+            return wsExtensionsErrorJson("problem querying suggestion engine: " + e + "\n\n" + sw.toString());
         } // try
         
         logger.log(Level.INFO, "got suggested operations");
